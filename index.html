@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Team Trivia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#f7f6f2;
+  --surface:#ffffff;
+  --surface2:#f0efe9;
+  --border:#e2e0d8;
+  --border-strong:#c8c6bc;
+  --text:#1a1916;
+  --text-muted:#6b6960;
+  --text-dim:#a8a69e;
+  --accent:#1a1916;
+  --accent-text:#f7f6f2;
+  --green:#1e7a45;
+  --green-bg:#edf7f2;
+  --green-border:#b6e0c8;
+  --red:#b83030;
+  --red-bg:#fdf0f0;
+  --red-border:#f0bcbc;
+  --progress:#1a1916;
+}
+
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:2rem 1rem 4rem;
+}
+
+#app{width:100%;max-width:580px;}
+
+.screen{display:none;}
+.screen.active{display:block;animation:rise .35s cubic-bezier(.22,1,.36,1);}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ---- NAME SCREEN ---- */
+.hero{text-align:center;padding:3rem 0 2rem;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--accent);color:var(--accent-text);
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 14px;border-radius:100px;margin-bottom:1.5rem;
+}
+.hero h1{font-size:2.4rem;font-weight:800;line-height:1.15;margin-bottom:.75rem;letter-spacing:-.02em;}
+.hero p{font-size:15px;color:var(--text-muted);line-height:1.6;}
+
+.name-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:2rem;
+  margin-bottom:1rem;
+}
+.name-card label{display:block;font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:8px;letter-spacing:.04em;text-transform:uppercase;}
+.name-card input{
+  width:100%;padding:14px 16px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:16px;font-weight:500;
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  background:var(--surface2);
+  color:var(--text);
+  transition:border-color .2s;
+}
+.name-card input:focus{outline:none;border-color:var(--accent);}
+.name-card input::placeholder{color:var(--text-dim);}
+
+.btn-full{
+  width:100%;padding:16px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:15px;font-weight:700;
+  background:var(--accent);color:var(--accent-text);
+  border:none;border-radius:14px;cursor:pointer;
+  transition:opacity .15s,transform .1s;
+  letter-spacing:.01em;
+}
+.btn-full:hover{opacity:.88;}
+.btn-full:active{transform:scale(.98);}
+
+.meta-row{display:flex;gap:12px;margin-top:1rem;flex-wrap:wrap;}
+.meta-chip{
+  display:flex;align-items:center;gap:6px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:100px;padding:6px 14px;
+  font-size:13px;color:var(--text-muted);
+}
+.meta-chip svg{width:14px;height:14px;stroke:var(--text-dim);flex-shrink:0;}
+
+/* ---- QUIZ SCREEN ---- */
+.quiz-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1.5rem;
+  padding-top:.5rem;
+}
+.q-counter{font-size:13px;font-weight:600;color:var(--text-muted);}
+.q-score-live{font-size:13px;font-weight:700;color:var(--text);}
+
+.progress-track{
+  height:4px;background:var(--border);
+  border-radius:2px;margin-bottom:2rem;overflow:hidden;
+}
+.progress-fill{height:100%;background:var(--progress);border-radius:2px;transition:width .4s ease;}
+
+.q-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:2rem;
+  margin-bottom:1rem;
+}
+.q-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;}
+.q-text{font-size:1.25rem;font-weight:700;line-height:1.4;color:var(--text);letter-spacing:-.01em;}
+
+.options{display:flex;flex-direction:column;gap:8px;margin-top:1.5rem;}
+.opt{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:14px;font-weight:500;
+  color:var(--text);
+  transition:border-color .15s,background .15s,transform .1s;
+  text-align:left;
+  width:100%;
+}
+.opt:hover:not(:disabled){border-color:var(--border-strong);background:var(--surface);}
+.opt:active:not(:disabled){transform:scale(.99);}
+.opt:disabled{cursor:default;}
+.opt-key{
+  width:28px;height:28px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;font-size:12px;font-weight:700;color:var(--text-muted);
+}
+.opt.correct{background:var(--green-bg);border-color:var(--green-border);}
+.opt.correct .opt-key{background:var(--green);border-color:var(--green);color:#fff;}
+.opt.correct .opt-text{color:var(--green);}
+.opt.wrong{background:var(--red-bg);border-color:var(--red-border);}
+.opt.wrong .opt-key{background:var(--red);border-color:var(--red);color:#fff;}
+.opt.wrong .opt-text{color:var(--red);}
+.opt-text{flex:1;}
+
+.feedback{
+  display:none;
+  border-radius:12px;padding:12px 16px;
+  font-size:14px;font-weight:600;
+  margin-top:8px;
+}
+.feedback.correct{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+.feedback.wrong{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
+
+.next-wrap{margin-top:1rem;}
+.btn-next{
+  width:100%;padding:14px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:14px;font-weight:700;
+  background:var(--accent);color:var(--accent-text);
+  border:none;border-radius:12px;cursor:pointer;
+  display:none;
+  transition:opacity .15s,transform .1s;
+}
+.btn-next:hover{opacity:.88;}
+.btn-next:active{transform:scale(.98);}
+
+/* ---- RESULTS SCREEN ---- */
+.results-hero{text-align:center;padding:2.5rem 0 1.5rem;}
+.score-ring{
+  width:120px;height:120px;
+  border-radius:50%;
+  background:var(--surface);
+  border:3px solid var(--accent);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  margin:0 auto 1.5rem;
+}
+.score-ring .big{font-size:2rem;font-weight:800;color:var(--text);line-height:1;}
+.score-ring .small{font-size:12px;color:var(--text-muted);margin-top:2px;}
+.result-name{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.5rem;}
+.result-grade{
+  display:inline-block;
+  padding:5px 16px;border-radius:100px;
+  font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  margin-bottom:1.5rem;
+}
+.grade-great{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+.grade-good{background:#fef9ec;color:#8a6a00;border:1px solid #f0d980;}
+.grade-ok{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
+
+.review-list{display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem;}
+.review-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:1rem 1.25rem;
+}
+.review-q{font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text);}
+.review-answer{font-size:13px;display:flex;align-items:center;gap:6px;}
+.review-correct{color:var(--green);}
+.review-wrong{color:var(--red);}
+.review-correct-ans{font-size:13px;color:var(--text-muted);margin-top:3px;}
+
+.btn-retry{
+  width:100%;padding:15px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:14px;font-weight:700;
+  background:var(--surface);color:var(--text);
+  border:1.5px solid var(--border);border-radius:14px;
+  cursor:pointer;transition:background .15s,transform .1s;
+}
+.btn-retry:hover{background:var(--surface2);}
+.btn-retry:active{transform:scale(.98);}
+
+.share-note{
+  text-align:center;font-size:13px;color:var(--text-dim);
+  margin-top:1.5rem;padding:1rem;
+  background:var(--surface2);border-radius:12px;
+  border:1px solid var(--border);
+}
+
+/* Edit notice */
+.edit-notice{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:1rem 1.25rem;margin-top:1rem;
+  font-size:13px;color:var(--text-muted);line-height:1.6;
+}
+.edit-notice strong{color:var(--text);}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- NAME SCREEN -->
+  <div id="name-screen" class="screen active">
+    <div class="hero">
+      <div class="hero-badge">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
+        Team Trivia
+      </div>
+      <h1>Ready to test your knowledge?</h1>
+      <p>Answer all questions at your own pace and see how you score.</p>
+    </div>
+
+    <div class="name-card">
+      <label>Your name</label>
+      <input type="text" id="player-name" placeholder="Enter your name..." maxlength="30" onkeydown="if(event.key==='Enter')startQuiz()" autofocus />
+    </div>
+
+    <button class="btn-full" onclick="startQuiz()">Start Quiz →</button>
+
+    <div class="meta-row">
+      <div class="meta-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span id="meta-count">10 questions</span>
+      </div>
+      <div class="meta-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01z"/></svg>
+        Go at your own pace
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quiz-screen" class="screen">
+    <div class="quiz-header">
+      <span class="q-counter" id="q-counter">Question 1 of 10</span>
+      <span class="q-score-live" id="q-score-live">0 correct</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+    <div class="q-card">
+      <div class="q-label" id="q-label">Question 1</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+
+    <div class="next-wrap">
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">Next question →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="results-screen" class="screen">
+    <div class="results-hero">
+      <div class="score-ring">
+        <span class="big" id="res-score"></span>
+        <span class="small" id="res-total"></span>
+      </div>
+      <div class="result-name" id="res-name"></div>
+      <div class="result-grade" id="res-grade"></div>
+      <p style="font-size:14px;color:var(--text-muted);" id="res-msg"></p>
+    </div>
+
+    <div class="review-list" id="review-list"></div>
+
+    <button class="btn-retry" onclick="retryQuiz()">Try again</button>
+
+    <div class="share-note">
+      Share this page link with your teammates so they can take the same quiz!
+    </div>
+  </div>
+
+</div>
+
+<script>
+// =============================================
+// EDIT YOUR QUESTIONS HERE
+// Format: { q, options: [...], answer index (0-based) }
+// =============================================
+const QUESTIONS = [
+  {
+    q: "Income Categories — For Individual users where the updated field is specifically \"Amount\", the top three income categories by transaction volume. Which of the following correctly ranks all four categories from highest to lowest transaction volume?",
+    options: [
+      "Employment Income > Other Income > Self-Employment Income > Deductions",
+      "Self-Employment Income > Employment Income > Deductions > Other Income",
+      "Employment Income > Self-Employment Income > Other Income > Deductions",
+      "Other Income > Employment Income > Self-Employment Income > Deductions"
+    ],
+    answer: 2,
+    explanation: "Employment Income holds the top spot, followed by Self-Employment Income, Other Income, and Deductions at the bottom."
+  },
+  {
+    q: "Tax Filing Household Removal — When removing a member from the tax filing household during Report a Change (Continuing), four user types account for the majority of transactions. Which option correctly ranks all four user types by transaction count, from highest to lowest?",
+    options: [
+      "Individual > CountyEligibilityWorker > Agent > Admin_verification",
+      "CountyEligibilityWorker > Agent > Individual > Admin_verification",
+      "CountyEligibilityWorker > Individual > Agent > Admin_verification",
+      "Agent > CountyEligibilityWorker > Individual > Admin_verification"
+    ],
+    answer: 2,
+    explanation: "CountyEligibilityWorker leads with 18,456 transactions, followed by Individual, Agent, and Admin_verification."
+  },
+  {
+    q: "Tax Household Removal Reasons — For tax filing household removal during Report a Change (Continuing), \"No Longer a Tax Dependent\" is the top reason for both user types. Which option correctly identifies the 2nd most used reason for both Individual and Agent users?",
+    options: [
+      "Individual → Moved out of Household; Agent → Obtained Other Health Coverage",
+      "Individual → Obtained Other Health Coverage; Agent → Moved out of Household",
+      "Individual → Obtained Other Health Coverage; Agent → Obtained Other Health Coverage",
+      "Individual → Moved out of Household; Agent → Moved out of Household"
+    ],
+    answer: 1,
+    explanation: "For Individual users, Obtained Other Health Coverage is 2nd (10,348). For Agent users, Moved out of Household is 2nd (2,181)."
+  },
+  {
+    q: "Primary Contact Name Change — For Individual users during Report a Change, the four fields updated under Primary Contact Name. Which option correctly ranks them from most to least frequently updated?",
+    options: [
+      "Last Name > Middle Name > First Name > Suffix",
+      "Middle Name > First Name > Last Name > Suffix",
+      "First Name > Middle Name > Last Name > Suffix",
+      "Middle Name > Last Name > First Name > Suffix"
+    ],
+    answer: 3,
+    explanation: "Middle Name: 7,391 | Last Name: 4,390 | First Name: 1,737 | Suffix: 530"
+  },
+  {
+    q: "Primary Contact Homeless Indicator Change — For Individual users updating the Primary Contact Homeless Indicator, which option correctly ranks the app run reasons by transaction volume, from highest to lowest?",
+    options: [
+      "Intake > Report a Change > Renewal Manual",
+      "Report a Change > Renewal Manual > Intake",
+      "Report a Change > Intake > Renewal Manual",
+      "Renewal Manual > Intake > Report a Change"
+    ],
+    answer: 2,
+    explanation: "Report a Change (Continuing): 30,651 | Intake: 24,977 | Renewal Manual: 19,788"
+  }
+];
+// =============================================
+
+let playerName = '';
+let currentQ = 0;
+let score = 0;
+let userAnswers = [];
+
+document.getElementById('meta-count').textContent = QUESTIONS.length + ' questions';
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startQuiz() {
+  const inp = document.getElementById('player-name');
+  playerName = inp.value.trim() || 'Player';
+  currentQ = 0;
+  score = 0;
+  userAnswers = [];
+  show('quiz-screen');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  const total = QUESTIONS.length;
+  const pct = Math.round((currentQ / total) * 100);
+
+  document.getElementById('q-counter').textContent = `Question ${currentQ + 1} of ${total}`;
+  document.getElementById('q-score-live').textContent = `${score} correct`;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('q-label').textContent = `Question ${currentQ + 1}`;
+  document.getElementById('q-text').textContent = q.q;
+
+  const letters = ['A', 'B', 'C', 'D'];
+  document.getElementById('options').innerHTML = q.options.map((opt, i) =>
+    `<button class="opt" id="opt-${i}" onclick="selectAnswer(${i})">
+      <span class="opt-key">${letters[i]}</span>
+      <span class="opt-text">${opt}</span>
+    </button>`
+  ).join('');
+
+  const fb = document.getElementById('feedback');
+  fb.style.display = 'none';
+  fb.className = 'feedback';
+  document.getElementById('btn-next').style.display = 'none';
+}
+
+function selectAnswer(idx) {
+  const q = QUESTIONS[currentQ];
+  const isCorrect = idx === q.answer;
+  if (isCorrect) score++;
+  userAnswers.push({ chosen: idx, correct: isCorrect });
+
+  document.querySelectorAll('.opt').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.answer) btn.classList.add('correct');
+    else if (i === idx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+  fb.textContent = isCorrect
+    ? `✓ Correct! ${q.explanation || ''}`
+    : `✗ Not quite — the answer is ${['A','B','C','D'][q.answer]}. ${q.options[q.answer]}. ${q.explanation || ''}`;
+  fb.style.display = 'block';
+
+  document.getElementById('q-score-live').textContent = `${score} correct`;
+
+  const nb = document.getElementById('btn-next');
+  nb.style.display = 'block';
+  nb.textContent = currentQ < QUESTIONS.length - 1 ? 'Next question →' : 'See my results →';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= QUESTIONS.length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResults() {
+  show('results-screen');
+  const total = QUESTIONS.length;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('res-score').textContent = score;
+  document.getElementById('res-total').textContent = 'out of ' + total;
+  document.getElementById('res-name').textContent = playerName;
+
+  const grade = document.getElementById('res-grade');
+  const msg = document.getElementById('res-msg');
+  if (pct >= 80) {
+    grade.textContent = 'Excellent!';
+    grade.className = 'result-grade grade-great';
+    msg.textContent = 'Outstanding performance — you really know your stuff!';
+  } else if (pct >= 50) {
+    grade.textContent = 'Good effort';
+    grade.className = 'result-grade grade-good';
+    msg.textContent = 'Solid work! A few more to brush up on.';
+  } else {
+    grade.textContent = 'Keep practising';
+    grade.className = 'result-grade grade-ok';
+    msg.textContent = 'Better luck next time — give it another go!';
+  }
+
+  const letters = ['A','B','C','D'];
+  document.getElementById('review-list').innerHTML = QUESTIONS.map((q, i) => {
+    const ua = userAnswers[i];
+    const correct = ua && ua.correct;
+    return `<div class="review-item">
+      <div class="review-q">${i+1}. ${q.q}</div>
+      <div class="review-answer ${correct ? 'review-correct' : 'review-wrong'}">
+        ${correct ? '✓' : '✗'} You answered: ${ua ? letters[ua.chosen] + '. ' + q.options[ua.chosen] : 'No answer'}
+      </div>
+      ${!correct ? `<div class="review-correct-ans">Correct: ${letters[q.answer]}. ${q.options[q.answer]}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function retryQuiz() {
+  currentQ = 0;
+  score = 0;
+  userAnswers = [];
+  show('quiz-screen');
+  renderQuestion();
+}
+</script>
+</body>
+</html>
