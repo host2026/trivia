@@ -7,321 +7,253 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
 :root{
-  --bg:#f7f6f2;
-  --surface:#ffffff;
-  --surface2:#f0efe9;
-  --border:#e2e0d8;
-  --border-strong:#c8c6bc;
-  --text:#1a1916;
-  --text-muted:#6b6960;
-  --text-dim:#a8a69e;
-  --accent:#1a1916;
-  --accent-text:#f7f6f2;
-  --green:#1e7a45;
-  --green-bg:#edf7f2;
-  --green-border:#b6e0c8;
-  --red:#b83030;
-  --red-bg:#fdf0f0;
-  --red-border:#f0bcbc;
-  --progress:#1a1916;
+  --bg:#f7f6f2;--surface:#ffffff;--surface2:#f0efe9;
+  --border:#e2e0d8;--border-strong:#c8c6bc;
+  --text:#1a1916;--text-muted:#6b6960;--text-dim:#a8a69e;
+  --accent:#1a1916;--accent-text:#f7f6f2;
+  --green:#1e7a45;--green-bg:#edf7f2;--green-border:#b6e0c8;
+  --red:#b83030;--red-bg:#fdf0f0;--red-border:#f0bcbc;
+  --amber:#8a6a00;--amber-bg:#fef9ec;--amber-border:#f0d980;
 }
-
-body{
-  font-family:'Plus Jakarta Sans',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-  padding:2rem 1rem 4rem;
-}
-
-#app{width:100%;max-width:580px;}
-
-.screen{display:none;}
-.screen.active{display:block;animation:rise .35s cubic-bezier(.22,1,.36,1);}
-@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-
-/* ---- NAME SCREEN ---- */
-.hero{text-align:center;padding:3rem 0 2rem;}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--accent);color:var(--accent-text);
-  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  padding:5px 14px;border-radius:100px;margin-bottom:1.5rem;
-}
-.hero h1{font-size:2.4rem;font-weight:800;line-height:1.15;margin-bottom:.75rem;letter-spacing:-.02em;}
-.hero p{font-size:15px;color:var(--text-muted);line-height:1.6;}
-
-.name-card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:2rem;
-  margin-bottom:1rem;
-}
-.name-card label{display:block;font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:8px;letter-spacing:.04em;text-transform:uppercase;}
-.name-card input{
-  width:100%;padding:14px 16px;
-  font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:16px;font-weight:500;
-  border:1.5px solid var(--border);
-  border-radius:12px;
-  background:var(--surface2);
-  color:var(--text);
-  transition:border-color .2s;
-}
-.name-card input:focus{outline:none;border-color:var(--accent);}
-.name-card input::placeholder{color:var(--text-dim);}
-
-.btn-full{
-  width:100%;padding:16px;
-  font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:15px;font-weight:700;
-  background:var(--accent);color:var(--accent-text);
-  border:none;border-radius:14px;cursor:pointer;
-  transition:opacity .15s,transform .1s;
-  letter-spacing:.01em;
-}
-.btn-full:hover{opacity:.88;}
-.btn-full:active{transform:scale(.98);}
-
-.meta-row{display:flex;gap:12px;margin-top:1rem;flex-wrap:wrap;}
-.meta-chip{
-  display:flex;align-items:center;gap:6px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:100px;padding:6px 14px;
-  font-size:13px;color:var(--text-muted);
-}
-.meta-chip svg{width:14px;height:14px;stroke:var(--text-dim);flex-shrink:0;}
-
-/* ---- QUIZ SCREEN ---- */
-.quiz-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:1.5rem;
-  padding-top:.5rem;
-}
-.q-counter{font-size:13px;font-weight:600;color:var(--text-muted);}
-.q-score-live{font-size:13px;font-weight:700;color:var(--text);}
-
-.progress-track{
-  height:4px;background:var(--border);
-  border-radius:2px;margin-bottom:2rem;overflow:hidden;
-}
-.progress-fill{height:100%;background:var(--progress);border-radius:2px;transition:width .4s ease;}
-
-.q-card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:2rem;
-  margin-bottom:1rem;
-}
-.q-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;}
-.q-text{font-size:1.25rem;font-weight:700;line-height:1.4;color:var(--text);letter-spacing:-.01em;}
-
-.options{display:flex;flex-direction:column;gap:8px;margin-top:1.5rem;}
-.opt{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 16px;
-  background:var(--surface2);
-  border:1.5px solid var(--border);
-  border-radius:12px;
-  cursor:pointer;
-  font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:14px;font-weight:500;
-  color:var(--text);
-  transition:border-color .15s,background .15s,transform .1s;
-  text-align:left;
-  width:100%;
-}
-.opt:hover:not(:disabled){border-color:var(--border-strong);background:var(--surface);}
-.opt:active:not(:disabled){transform:scale(.99);}
-.opt:disabled{cursor:default;}
-.opt-key{
-  width:28px;height:28px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:8px;font-size:12px;font-weight:700;color:var(--text-muted);
-}
-.opt.correct{background:var(--green-bg);border-color:var(--green-border);}
-.opt.correct .opt-key{background:var(--green);border-color:var(--green);color:#fff;}
-.opt.correct .opt-text{color:var(--green);}
-.opt.wrong{background:var(--red-bg);border-color:var(--red-border);}
-.opt.wrong .opt-key{background:var(--red);border-color:var(--red);color:#fff;}
-.opt.wrong .opt-text{color:var(--red);}
-.opt-text{flex:1;}
-
-.feedback{
-  display:none;
-  border-radius:12px;padding:12px 16px;
-  font-size:14px;font-weight:600;
-  margin-top:8px;
-}
-.feedback.correct{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
-.feedback.wrong{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
-
-.next-wrap{margin-top:1rem;}
-.btn-next{
-  width:100%;padding:14px;
-  font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:14px;font-weight:700;
-  background:var(--accent);color:var(--accent-text);
-  border:none;border-radius:12px;cursor:pointer;
-  display:none;
-  transition:opacity .15s,transform .1s;
-}
-.btn-next:hover{opacity:.88;}
-.btn-next:active{transform:scale(.98);}
-
-/* ---- RESULTS SCREEN ---- */
-.results-hero{text-align:center;padding:2.5rem 0 1.5rem;}
-.score-ring{
-  width:120px;height:120px;
-  border-radius:50%;
-  background:var(--surface);
-  border:3px solid var(--accent);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  margin:0 auto 1.5rem;
-}
-.score-ring .big{font-size:2rem;font-weight:800;color:var(--text);line-height:1;}
-.score-ring .small{font-size:12px;color:var(--text-muted);margin-top:2px;}
-.result-name{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.5rem;}
-.result-grade{
-  display:inline-block;
-  padding:5px 16px;border-radius:100px;
-  font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
-  margin-bottom:1.5rem;
-}
-.grade-great{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
-.grade-good{background:#fef9ec;color:#8a6a00;border:1px solid #f0d980;}
-.grade-ok{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
-
-.review-list{display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem;}
-.review-item{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:14px;padding:1rem 1.25rem;
-}
-.review-q{font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text);}
-.review-answer{font-size:13px;display:flex;align-items:center;gap:6px;}
-.review-correct{color:var(--green);}
-.review-wrong{color:var(--red);}
-.review-correct-ans{font-size:13px;color:var(--text-muted);margin-top:3px;}
-
-.btn-retry{
-  width:100%;padding:15px;
-  font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:14px;font-weight:700;
-  background:var(--surface);color:var(--text);
-  border:1.5px solid var(--border);border-radius:14px;
-  cursor:pointer;transition:background .15s,transform .1s;
-}
-.btn-retry:hover{background:var(--surface2);}
-.btn-retry:active{transform:scale(.98);}
-
-.share-note{
-  text-align:center;font-size:13px;color:var(--text-dim);
-  margin-top:1.5rem;padding:1rem;
-  background:var(--surface2);border-radius:12px;
-  border:1px solid var(--border);
-}
-
-/* Edit notice */
-.edit-notice{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:14px;padding:1rem 1.25rem;margin-top:1rem;
-  font-size:13px;color:var(--text-muted);line-height:1.6;
-}
-.edit-notice strong{color:var(--text);}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem 4rem}
+#app{width:100%;max-width:600px}
+.screen{display:none}
+.screen.active{display:block;animation:rise .3s cubic-bezier(.22,1,.36,1)}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.5rem 1.75rem;margin-bottom:.875rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 20px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:600;border:1.5px solid var(--border-strong);border-radius:10px;background:transparent;color:var(--text);cursor:pointer;transition:background .15s,opacity .15s,transform .1s}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
+.btn-primary:hover{opacity:.87;background:var(--accent)}
+.btn-full{width:100%;padding:14px;font-size:15px}
+.btn-sm{padding:6px 14px;font-size:13px}
+.btn-danger{border-color:var(--red-border);color:var(--red)}
+.btn-danger:hover{background:var(--red-bg)}
+input[type=text],input[type=password]{width:100%;padding:13px 15px;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:500;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);transition:border-color .2s}
+input:focus{outline:none;border-color:var(--accent)}
+input::placeholder{color:var(--text-dim)}
+label{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px}
+.err{font-size:13px;color:var(--red);margin-top:6px}
+.hero{text-align:center;padding:2.5rem 0 1.75rem}
+.badge{display:inline-flex;align-items:center;gap:5px;background:var(--accent);color:var(--accent-text);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:1.25rem}
+.hero h1{font-size:2.2rem;font-weight:800;line-height:1.15;margin-bottom:.6rem;letter-spacing:-.02em}
+.hero p{font-size:15px;color:var(--text-muted);line-height:1.6}
+.chips{display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap;justify-content:center}
+.chip{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:5px 13px;font-size:13px;color:var(--text-muted)}
+.qheader{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.qcounter{font-size:13px;font-weight:600;color:var(--text-muted)}
+.qscore{font-size:13px;font-weight:700;color:var(--text)}
+.prog-track{height:4px;background:var(--border);border-radius:2px;margin-bottom:1.75rem;overflow:hidden}
+.prog-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease}
+.qlabel{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
+.qtext{font-size:1.15rem;font-weight:700;line-height:1.45;color:var(--text);letter-spacing:-.01em}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:1.25rem}
+.opt{display:flex;align-items:flex-start;gap:11px;padding:13px 15px;background:var(--surface2);border:1.5px solid var(--border);border-radius:11px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500;color:var(--text);transition:border-color .15s,background .15s,transform .1s;text-align:left;width:100%}
+.opt:hover:not(:disabled){border-color:var(--border-strong);background:var(--surface)}
+.opt:active:not(:disabled){transform:scale(.99)}
+.opt:disabled{cursor:default}
+.opt-key{width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);border-radius:7px;font-size:11px;font-weight:700;color:var(--text-muted);margin-top:1px}
+.opt.correct{background:var(--green-bg);border-color:var(--green-border)}
+.opt.correct .opt-key{background:var(--green);border-color:var(--green);color:#fff}
+.opt.correct .opt-txt{color:var(--green)}
+.opt.wrong{background:var(--red-bg);border-color:var(--red-border)}
+.opt.wrong .opt-key{background:var(--red);border-color:var(--red);color:#fff}
+.opt.wrong .opt-txt{color:var(--red)}
+.opt-txt{flex:1;line-height:1.4}
+.feedback{display:none;border-radius:11px;padding:11px 15px;font-size:13px;font-weight:600;margin-top:8px;line-height:1.5}
+.feedback.ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.feedback.no{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.score-ring{width:110px;height:110px;border-radius:50%;background:var(--surface);border:3px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1.25rem}
+.score-ring .big{font-size:1.9rem;font-weight:800;line-height:1}
+.score-ring .sm{font-size:12px;color:var(--text-muted);margin-top:2px}
+.result-name{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.4rem}
+.grade{display:inline-block;padding:4px 15px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:1.25rem}
+.grade-great{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.grade-good{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.grade-ok{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.review-item{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:.9rem 1.1rem;margin-bottom:.6rem}
+.review-q{font-size:13px;font-weight:600;margin-bottom:5px;color:var(--text)}
+.review-a{font-size:13px}
+.r-correct{color:var(--green)}
+.r-wrong{color:var(--red)}
+.r-hint{font-size:12px;color:var(--text-muted);margin-top:2px}
+.share-note{text-align:center;font-size:13px;color:var(--text-dim);background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.875rem;margin-top:1rem}
+.host-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:1rem}
+.metric{background:var(--surface2);border-radius:10px;padding:.875rem;text-align:center}
+.metric-lbl{font-size:11px;color:var(--text-muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em}
+.metric-val{font-size:22px;font-weight:700;color:var(--text)}
+.lb-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.lb-row:last-child{border-bottom:none}
+.lb-rank{font-size:13px;font-weight:700;color:var(--text-dim);width:22px;text-align:center;flex-shrink:0}
+.lb-rank.gold{color:#BA7517}
+.lb-name{font-size:14px;font-weight:600;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-bar-wrap{width:70px;height:5px;background:var(--surface2);border-radius:3px;flex-shrink:0}
+.lb-bar{height:100%;border-radius:3px;background:var(--accent);transition:width .5s}
+.lb-pct{font-size:12px;color:var(--text-muted);width:30px;text-align:right;flex-shrink:0}
+.lb-score{font-size:13px;font-weight:700;color:var(--text);flex-shrink:0}
+.pill{display:inline-block;padding:2px 9px;border-radius:100px;font-size:11px;font-weight:700}
+.pill-green{background:var(--green-bg);color:var(--green)}
+.pill-amber{background:var(--amber-bg);color:var(--amber)}
+.pill-red{background:var(--red-bg);color:var(--red)}
+.empty{text-align:center;padding:2rem;color:var(--text-muted);font-size:14px}
+.bd-nav{display:flex;align-items:center;gap:8px}
+.ans-bar-row{margin-bottom:10px}
+.ans-bar-top{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.ans-letter{font-size:12px;font-weight:700;width:18px;flex-shrink:0}
+.ans-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.ans-fill{height:100%;border-radius:3px;transition:width .4s}
+.ans-count{font-size:12px;color:var(--text-muted);width:50px;text-align:right;flex-shrink:0}
+.ans-who{font-size:11px;color:var(--text-dim);padding-left:26px}
+.info-banner{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;font-size:13px;color:var(--amber);line-height:1.6}
+.info-banner strong{color:#5a4500}
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- NAME SCREEN -->
-  <div id="name-screen" class="screen active">
-    <div class="hero">
-      <div class="hero-badge">
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
-        Team Trivia
-      </div>
-      <h1>Ready to test your knowledge?</h1>
-      <p>Answer all questions at your own pace and see how you score.</p>
-    </div>
-
-    <div class="name-card">
-      <label>Your name</label>
-      <input type="text" id="player-name" placeholder="Enter your name..." maxlength="30" onkeydown="if(event.key==='Enter')startQuiz()" autofocus />
-    </div>
-
-    <button class="btn-full" onclick="startQuiz()">Start Quiz →</button>
-
-    <div class="meta-row">
-      <div class="meta-chip">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span id="meta-count">10 questions</span>
-      </div>
-      <div class="meta-chip">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01z"/></svg>
-        Go at your own pace
-      </div>
-    </div>
+<!-- PLAYER: NAME -->
+<div id="s-name" class="screen active">
+  <div class="hero">
+    <div class="badge">Team Trivia</div>
+    <h1>Test your knowledge</h1>
+    <p>Answer all questions at your own pace and see how you score.</p>
   </div>
-
-  <!-- QUIZ SCREEN -->
-  <div id="quiz-screen" class="screen">
-    <div class="quiz-header">
-      <span class="q-counter" id="q-counter">Question 1 of 10</span>
-      <span class="q-score-live" id="q-score-live">0 correct</span>
-    </div>
-    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-
-    <div class="q-card">
-      <div class="q-label" id="q-label">Question 1</div>
-      <div class="q-text" id="q-text"></div>
-      <div class="options" id="options"></div>
-      <div class="feedback" id="feedback"></div>
-    </div>
-
-    <div class="next-wrap">
-      <button class="btn-next" id="btn-next" onclick="nextQuestion()">Next question →</button>
-    </div>
+  <div class="card">
+    <label for="pname">Your name</label>
+    <input type="text" id="pname" placeholder="Enter your name..." maxlength="30" onkeydown="if(event.key==='Enter')startQuiz()"/>
+    <p class="err" id="name-err"></p>
   </div>
-
-  <!-- RESULTS SCREEN -->
-  <div id="results-screen" class="screen">
-    <div class="results-hero">
-      <div class="score-ring">
-        <span class="big" id="res-score"></span>
-        <span class="small" id="res-total"></span>
-      </div>
-      <div class="result-name" id="res-name"></div>
-      <div class="result-grade" id="res-grade"></div>
-      <p style="font-size:14px;color:var(--text-muted);" id="res-msg"></p>
-    </div>
-
-    <div class="review-list" id="review-list"></div>
-
-    <button class="btn-retry" onclick="retryQuiz()">Try again</button>
-
-    <div class="share-note">
-      Share this page link with your teammates so they can take the same quiz!
-    </div>
+  <button class="btn btn-primary btn-full" onclick="startQuiz()">Start quiz →</button>
+  <div class="chips">
+    <div class="chip" id="q-count-chip">5 questions</div>
+    <div class="chip">Go at your own pace</div>
   </div>
-
 </div>
 
+<!-- PLAYER: QUIZ -->
+<div id="s-quiz" class="screen">
+  <div class="qheader">
+    <span class="qcounter" id="qcounter">Q 1/5</span>
+    <span class="qscore" id="qscore">0 correct</span>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="card">
+    <div class="qlabel" id="qlabel">Question 1</div>
+    <div class="qtext" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn btn-primary btn-full" id="btn-next" onclick="nextQ()" style="display:none;margin-top:.75rem">Next →</button>
+  </div>
+</div>
+
+<!-- PLAYER: DONE -->
+<div id="s-done" class="screen">
+  <div class="card" style="text-align:center;padding:2rem 1.75rem">
+    <div class="score-ring"><span class="big" id="res-score"></span><span class="sm" id="res-total"></span></div>
+    <div class="result-name" id="res-name"></div>
+    <div class="grade" id="res-grade"></div>
+    <p style="font-size:14px;color:var(--text-muted)" id="res-msg"></p>
+  </div>
+  <div id="review-list"></div>
+  <button class="btn btn-full" onclick="retryQuiz()" style="margin-top:.25rem">Try again</button>
+  <div class="share-note">Your score has been saved. The host can see your results on the dashboard.</div>
+</div>
+
+<!-- HOST: LOGIN -->
+<div id="s-host-login" class="screen">
+  <div class="hero" style="padding:2rem 0 1.5rem">
+    <h1 style="font-size:1.6rem">Host dashboard</h1>
+    <p>Enter the host password to view results.</p>
+  </div>
+  <div class="card">
+    <label for="hpwd">Password</label>
+    <input type="password" id="hpwd" placeholder="Enter host password..." onkeydown="if(event.key==='Enter')hostLogin()"/>
+    <p class="err" id="pwd-err"></p>
+  </div>
+  <button class="btn btn-primary btn-full" onclick="hostLogin()">Unlock dashboard →</button>
+  <p style="text-align:center;margin-top:1rem"><a href="#" onclick="show('s-name');return false;" style="font-size:13px;color:var(--text-muted)">← Back to quiz</a></p>
+</div>
+
+<!-- HOST: DASHBOARD -->
+<div id="s-host" class="screen">
+  <div class="host-header">
+    <div>
+      <div style="font-size:1.4rem;font-weight:800;letter-spacing:-.01em">Host dashboard</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:2px" id="last-refresh"></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-sm" onclick="loadDashboard()">Refresh</button>
+      <button class="btn btn-sm btn-danger" onclick="clearResponses()">Clear all</button>
+      <button class="btn btn-sm" onclick="show('s-name')">Exit</button>
+    </div>
+  </div>
+
+  <div id="setup-notice" class="info-banner" style="display:none">
+    <strong>Note:</strong> Responses are stored in this browser only. To collect responses from all players across devices, add a Google Sheets URL in the <code>SHEET_URL</code> config at the top of the file. Instructions are in the code comments.
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="metric-lbl">Players</div><div class="metric-val" id="m-players">—</div></div>
+    <div class="metric"><div class="metric-lbl">Avg score</div><div class="metric-val" id="m-avg">—</div></div>
+    <div class="metric"><div class="metric-lbl">Top score</div><div class="metric-val" id="m-top">—</div></div>
+    <div class="metric"><div class="metric-lbl">Questions</div><div class="metric-val">5</div></div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:15px;font-weight:700;margin-bottom:.875rem">Leaderboard</div>
+    <div id="leaderboard"><div class="empty">No responses yet</div></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.875rem;flex-wrap:wrap;gap:8px">
+      <div style="font-size:15px;font-weight:700">Answer breakdown</div>
+      <div class="bd-nav">
+        <button class="btn btn-sm" id="bd-prev" onclick="bdNav(-1)">← Prev</button>
+        <span style="font-size:13px;font-weight:600;min-width:36px;text-align:center" id="bd-label">Q 1</span>
+        <button class="btn btn-sm" id="bd-next" onclick="bdNav(1)">Next →</button>
+      </div>
+    </div>
+    <div id="breakdown"></div>
+  </div>
+</div>
+
+</div>
 <script>
-// =============================================
-// EDIT YOUR QUESTIONS HERE
-// Format: { q, options: [...], answer index (0-based) }
-// =============================================
+// ================================================================
+// CONFIGURATION — change these values before uploading
+// ================================================================
+const HOST_PASSWORD = 'trivia2024';
+// Change the password above to something only you know!
+
+// OPTIONAL: Google Sheets integration
+// 1. Open Google Sheets → Extensions → Apps Script → paste this:
+//
+//   function doPost(e) {
+//     var s = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+//     var d = JSON.parse(e.postData.contents);
+//     s.appendRow([new Date(), d.name, d.score, d.total, d.pct, d.answers.join(',')]);
+//     return ContentService.createTextOutput('ok');
+//   }
+//   function doGet(e) {
+//     var s = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+//     var rows = s.getDataRange().getValues();
+//     var out = rows.slice(1).map(function(r){
+//       return {name:r[1],score:r[2],total:r[3],pct:r[4],answers:r[5]?r[5].toString().split(',').map(Number):[],ts:new Date(r[0]).getTime()};
+//     });
+//     return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);
+//   }
+//
+// 2. Deploy → New deployment → Web App → Anyone can access
+// 3. Paste the URL below:
+const SHEET_URL = '';
+// ================================================================
+
 const QUESTIONS = [
   {
-    q: "Income Categories — For Individual users where the updated field is specifically \"Amount\", the top three income categories by transaction volume. Which of the following correctly ranks all four categories from highest to lowest transaction volume?",
+    q: "Income Categories — For Individual users where the updated field is specifically \"Amount\", which correctly ranks all four categories from highest to lowest transaction volume?",
     options: [
       "Employment Income > Other Income > Self-Employment Income > Deductions",
       "Self-Employment Income > Employment Income > Deductions > Other Income",
@@ -329,10 +261,10 @@ const QUESTIONS = [
       "Other Income > Employment Income > Self-Employment Income > Deductions"
     ],
     answer: 2,
-    explanation: "Employment Income holds the top spot, followed by Self-Employment Income, Other Income, and Deductions at the bottom."
+    explanation: "Employment Income holds the top spot, followed by Self-Employment Income, Other Income, and Deductions."
   },
   {
-    q: "Tax Filing Household Removal — When removing a member from the tax filing household during Report a Change (Continuing), four user types account for the majority of transactions. Which option correctly ranks all four user types by transaction count, from highest to lowest?",
+    q: "Tax Filing Household Removal — Which option correctly ranks all four user types by transaction count from highest to lowest?",
     options: [
       "Individual > CountyEligibilityWorker > Agent > Admin_verification",
       "CountyEligibilityWorker > Agent > Individual > Admin_verification",
@@ -340,10 +272,10 @@ const QUESTIONS = [
       "Agent > CountyEligibilityWorker > Individual > Admin_verification"
     ],
     answer: 2,
-    explanation: "CountyEligibilityWorker leads with 18,456 transactions, followed by Individual, Agent, and Admin_verification."
+    explanation: "CountyEligibilityWorker leads with 18,456 transactions, followed by Individual, Agent, Admin_verification."
   },
   {
-    q: "Tax Household Removal Reasons — For tax filing household removal during Report a Change (Continuing), \"No Longer a Tax Dependent\" is the top reason for both user types. Which option correctly identifies the 2nd most used reason for both Individual and Agent users?",
+    q: "Tax Household Removal Reasons — Which option correctly identifies the 2nd most used reason for both Individual and Agent users?",
     options: [
       "Individual → Moved out of Household; Agent → Obtained Other Health Coverage",
       "Individual → Obtained Other Health Coverage; Agent → Moved out of Household",
@@ -354,7 +286,7 @@ const QUESTIONS = [
     explanation: "For Individual users, Obtained Other Health Coverage is 2nd (10,348). For Agent users, Moved out of Household is 2nd (2,181)."
   },
   {
-    q: "Primary Contact Name Change — For Individual users during Report a Change, the four fields updated under Primary Contact Name. Which option correctly ranks them from most to least frequently updated?",
+    q: "Primary Contact Name Change — Which option correctly ranks the four fields from most to least frequently updated?",
     options: [
       "Last Name > Middle Name > First Name > Suffix",
       "Middle Name > First Name > Last Name > Suffix",
@@ -365,7 +297,7 @@ const QUESTIONS = [
     explanation: "Middle Name: 7,391 | Last Name: 4,390 | First Name: 1,737 | Suffix: 530"
   },
   {
-    q: "Primary Contact Homeless Indicator Change — For Individual users updating the Primary Contact Homeless Indicator, which option correctly ranks the app run reasons by transaction volume, from highest to lowest?",
+    q: "Primary Contact Homeless Indicator — Which option correctly ranks the app run reasons by transaction volume from highest to lowest?",
     options: [
       "Intake > Report a Change > Renewal Manual",
       "Report a Change > Renewal Manual > Intake",
@@ -376,136 +308,193 @@ const QUESTIONS = [
     explanation: "Report a Change (Continuing): 30,651 | Intake: 24,977 | Renewal Manual: 19,788"
   }
 ];
-// =============================================
 
-let playerName = '';
-let currentQ = 0;
-let score = 0;
-let userAnswers = [];
+const LETTERS = ['A','B','C','D'];
+let pName='', pQ=0, pScore=0, pAnswers=[], bdQ=0, responses=[];
 
-document.getElementById('meta-count').textContent = QUESTIONS.length + ' questions';
+document.getElementById('q-count-chip').textContent = QUESTIONS.length + ' questions';
 
-function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+// Auto-show host login if URL contains ?host
+if(location.search.includes('host')) show('s-host-login');
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-function startQuiz() {
-  const inp = document.getElementById('player-name');
-  playerName = inp.value.trim() || 'Player';
-  currentQ = 0;
-  score = 0;
-  userAnswers = [];
-  show('quiz-screen');
-  renderQuestion();
+// ---- PLAYER ----
+function startQuiz(){
+  const n=document.getElementById('pname').value.trim();
+  if(!n){document.getElementById('name-err').textContent='Please enter your name.';return;}
+  document.getElementById('name-err').textContent='';
+  pName=n; pQ=0; pScore=0; pAnswers=[];
+  show('s-quiz'); renderQ();
 }
 
-function renderQuestion() {
-  const q = QUESTIONS[currentQ];
-  const total = QUESTIONS.length;
-  const pct = Math.round((currentQ / total) * 100);
-
-  document.getElementById('q-counter').textContent = `Question ${currentQ + 1} of ${total}`;
-  document.getElementById('q-score-live').textContent = `${score} correct`;
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('q-label').textContent = `Question ${currentQ + 1}`;
-  document.getElementById('q-text').textContent = q.q;
-
-  const letters = ['A', 'B', 'C', 'D'];
-  document.getElementById('options').innerHTML = q.options.map((opt, i) =>
-    `<button class="opt" id="opt-${i}" onclick="selectAnswer(${i})">
-      <span class="opt-key">${letters[i]}</span>
-      <span class="opt-text">${opt}</span>
-    </button>`
+function renderQ(){
+  const q=QUESTIONS[pQ];
+  document.getElementById('qcounter').textContent='Q '+(pQ+1)+'/'+QUESTIONS.length;
+  document.getElementById('qscore').textContent=pScore+' correct';
+  document.getElementById('prog-fill').style.width=Math.round((pQ/QUESTIONS.length)*100)+'%';
+  document.getElementById('qlabel').textContent='Question '+(pQ+1);
+  document.getElementById('qtext').textContent=q.q;
+  document.getElementById('opts').innerHTML=q.options.map((o,i)=>
+    '<button class="opt" id="o'+i+'" onclick="selectAns('+i+')"><span class="opt-key">'+LETTERS[i]+'</span><span class="opt-txt">'+o+'</span></button>'
   ).join('');
-
-  const fb = document.getElementById('feedback');
-  fb.style.display = 'none';
-  fb.className = 'feedback';
-  document.getElementById('btn-next').style.display = 'none';
+  const fb=document.getElementById('feedback');
+  fb.style.display='none'; fb.className='feedback';
+  document.getElementById('btn-next').style.display='none';
 }
 
-function selectAnswer(idx) {
-  const q = QUESTIONS[currentQ];
-  const isCorrect = idx === q.answer;
-  if (isCorrect) score++;
-  userAnswers.push({ chosen: idx, correct: isCorrect });
-
-  document.querySelectorAll('.opt').forEach((btn, i) => {
-    btn.disabled = true;
-    if (i === q.answer) btn.classList.add('correct');
-    else if (i === idx && !isCorrect) btn.classList.add('wrong');
+function selectAns(idx){
+  const q=QUESTIONS[pQ];
+  const ok=idx===q.answer;
+  if(ok) pScore++;
+  pAnswers.push(idx);
+  document.querySelectorAll('.opt').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.answer) b.classList.add('correct');
+    else if(i===idx) b.classList.add('wrong');
   });
-
-  const fb = document.getElementById('feedback');
-  fb.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
-  fb.textContent = isCorrect
-    ? `✓ Correct! ${q.explanation || ''}`
-    : `✗ Not quite — the answer is ${['A','B','C','D'][q.answer]}. ${q.options[q.answer]}. ${q.explanation || ''}`;
-  fb.style.display = 'block';
-
-  document.getElementById('q-score-live').textContent = `${score} correct`;
-
-  const nb = document.getElementById('btn-next');
-  nb.style.display = 'block';
-  nb.textContent = currentQ < QUESTIONS.length - 1 ? 'Next question →' : 'See my results →';
+  const fb=document.getElementById('feedback');
+  fb.className='feedback '+(ok?'ok':'no');
+  fb.textContent=ok?'Correct! '+q.explanation:'Incorrect — '+LETTERS[q.answer]+' is right. '+q.explanation;
+  fb.style.display='block';
+  document.getElementById('qscore').textContent=pScore+' correct';
+  const nb=document.getElementById('btn-next');
+  nb.style.display='block';
+  nb.textContent=pQ<QUESTIONS.length-1?'Next →':'See results →';
 }
 
-function nextQuestion() {
-  currentQ++;
-  if (currentQ >= QUESTIONS.length) {
-    showResults();
-  } else {
-    renderQuestion();
-  }
+function nextQ(){
+  pQ++;
+  if(pQ>=QUESTIONS.length) finishQuiz();
+  else renderQ();
 }
 
-function showResults() {
-  show('results-screen');
-  const total = QUESTIONS.length;
-  const pct = Math.round((score / total) * 100);
-
-  document.getElementById('progress-fill').style.width = '100%';
-  document.getElementById('res-score').textContent = score;
-  document.getElementById('res-total').textContent = 'out of ' + total;
-  document.getElementById('res-name').textContent = playerName;
-
-  const grade = document.getElementById('res-grade');
-  const msg = document.getElementById('res-msg');
-  if (pct >= 80) {
-    grade.textContent = 'Excellent!';
-    grade.className = 'result-grade grade-great';
-    msg.textContent = 'Outstanding performance — you really know your stuff!';
-  } else if (pct >= 50) {
-    grade.textContent = 'Good effort';
-    grade.className = 'result-grade grade-good';
-    msg.textContent = 'Solid work! A few more to brush up on.';
-  } else {
-    grade.textContent = 'Keep practising';
-    grade.className = 'result-grade grade-ok';
-    msg.textContent = 'Better luck next time — give it another go!';
-  }
-
-  const letters = ['A','B','C','D'];
-  document.getElementById('review-list').innerHTML = QUESTIONS.map((q, i) => {
-    const ua = userAnswers[i];
-    const correct = ua && ua.correct;
-    return `<div class="review-item">
-      <div class="review-q">${i+1}. ${q.q}</div>
-      <div class="review-answer ${correct ? 'review-correct' : 'review-wrong'}">
-        ${correct ? '✓' : '✗'} You answered: ${ua ? letters[ua.chosen] + '. ' + q.options[ua.chosen] : 'No answer'}
-      </div>
-      ${!correct ? `<div class="review-correct-ans">Correct: ${letters[q.answer]}. ${q.options[q.answer]}</div>` : ''}
-    </div>`;
+async function finishQuiz(){
+  show('s-done');
+  const total=QUESTIONS.length, pct=Math.round((pScore/total)*100);
+  document.getElementById('prog-fill').style.width='100%';
+  document.getElementById('res-score').textContent=pScore;
+  document.getElementById('res-total').textContent='out of '+total;
+  document.getElementById('res-name').textContent=pName;
+  const grade=document.getElementById('res-grade'), msg=document.getElementById('res-msg');
+  if(pct>=80){grade.textContent='Excellent!';grade.className='grade grade-great';msg.textContent='Outstanding — you really know your stuff!';}
+  else if(pct>=50){grade.textContent='Good effort';grade.className='grade grade-good';msg.textContent='Solid work! A few more to brush up on.';}
+  else{grade.textContent='Keep practising';grade.className='grade grade-ok';msg.textContent='Better luck next time — give it another go!';}
+  document.getElementById('review-list').innerHTML=QUESTIONS.map((q,i)=>{
+    const ch=pAnswers[i], ok=ch===q.answer;
+    return '<div class="review-item"><div class="review-q">'+(i+1)+'. '+q.q+'</div>'
+      +'<div class="review-a '+(ok?'r-correct':'r-wrong')+'">'+(ok?'✓':'✗')+' '+LETTERS[ch]+'. '+q.options[ch]+'</div>'
+      +(!ok?'<div class="r-hint">Correct: '+LETTERS[q.answer]+'. '+q.options[q.answer]+'</div>':'')
+      +'</div>';
   }).join('');
+  const entry={name:pName,score:pScore,total,pct,answers:[...pAnswers],ts:Date.now()};
+  saveLocal(entry);
+  if(SHEET_URL){
+    try{await fetch(SHEET_URL,{method:'POST',body:JSON.stringify(entry),headers:{'Content-Type':'application/json'}});}catch(e){}
+  }
 }
 
-function retryQuiz() {
-  currentQ = 0;
-  score = 0;
-  userAnswers = [];
-  show('quiz-screen');
-  renderQuestion();
+function retryQuiz(){pQ=0;pScore=0;pAnswers=[];show('s-quiz');renderQ();}
+
+// ---- STORAGE ----
+function saveLocal(entry){
+  const all=getLocal();
+  const idx=all.findIndex(r=>r.name===entry.name);
+  if(idx>=0) all[idx]=entry; else all.push(entry);
+  try{localStorage.setItem('trivia_resp',JSON.stringify(all));}catch(e){}
+}
+function getLocal(){
+  try{return JSON.parse(localStorage.getItem('trivia_resp')||'[]');}catch(e){return [];}
+}
+
+// ---- HOST ----
+function hostLogin(){
+  if(document.getElementById('hpwd').value===HOST_PASSWORD){
+    show('s-host'); loadDashboard();
+  } else {
+    document.getElementById('pwd-err').textContent='Incorrect password. Try again.';
+  }
+}
+
+async function loadDashboard(){
+  document.getElementById('last-refresh').textContent='Updated: '+new Date().toLocaleTimeString();
+  if(SHEET_URL){
+    document.getElementById('setup-notice').style.display='none';
+    try{
+      const res=await fetch(SHEET_URL);
+      responses=await res.json();
+      renderDashboard(); return;
+    }catch(e){}
+  }
+  document.getElementById('setup-notice').style.display='block';
+  responses=getLocal();
+  renderDashboard();
+}
+
+function renderDashboard(){
+  const sorted=[...responses].sort((a,b)=>b.score-a.score);
+  document.getElementById('m-players').textContent=sorted.length||'0';
+  if(!sorted.length){
+    document.getElementById('m-avg').textContent='—';
+    document.getElementById('m-top').textContent='—';
+    document.getElementById('leaderboard').innerHTML='<div class="empty">No responses yet — share your quiz link!</div>';
+    document.getElementById('breakdown').innerHTML='<div class="empty">No data yet</div>';
+    return;
+  }
+  const avg=(sorted.reduce((s,r)=>s+r.score,0)/sorted.length).toFixed(1);
+  document.getElementById('m-avg').textContent=avg;
+  document.getElementById('m-top').textContent=sorted[0].score+'/'+sorted[0].total;
+  const maxS=sorted[0].score||1;
+  document.getElementById('leaderboard').innerHTML=sorted.map((r,i)=>{
+    const p=Math.round((r.score/r.total)*100);
+    const pill=p>=80?'pill-green':p>=50?'pill-amber':'pill-red';
+    return '<div class="lb-row">'
+      +'<span class="lb-rank '+(i===0?'gold':'')+'">'+(i+1)+'</span>'
+      +'<span class="lb-name">'+r.name+'</span>'
+      +'<div class="lb-bar-wrap"><div class="lb-bar" style="width:'+Math.round((r.score/maxS)*100)+'%"></div></div>'
+      +'<span class="lb-pct"><span class="pill '+pill+'">'+p+'%</span></span>'
+      +'<span class="lb-score">'+r.score+'/'+r.total+'</span>'
+      +'</div>';
+  }).join('');
+  renderBreakdown();
+}
+
+function renderBreakdown(){
+  const q=QUESTIONS[bdQ];
+  document.getElementById('bd-label').textContent='Q '+(bdQ+1);
+  document.getElementById('bd-prev').disabled=bdQ===0;
+  document.getElementById('bd-next').disabled=bdQ===QUESTIONS.length-1;
+  if(!responses.length){document.getElementById('breakdown').innerHTML='<div class="empty">No data yet</div>';return;}
+  const tally=[0,0,0,0];
+  responses.forEach(r=>{if(r.answers&&r.answers[bdQ]!==undefined)tally[r.answers[bdQ]]++;});
+  const total=tally.reduce((a,b)=>a+b,0)||1;
+  let html='<div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;line-height:1.5">'+q.q+'</div>';
+  html+=q.options.map((o,i)=>{
+    const cnt=tally[i], pct=Math.round((cnt/total)*100), ok=i===q.answer;
+    const col=ok?'var(--green)':'var(--red)';
+    const who=responses.filter(r=>r.answers&&r.answers[bdQ]===i).map(r=>r.name).join(', ');
+    return '<div class="ans-bar-row">'
+      +'<div class="ans-bar-top">'
+      +'<span class="ans-letter" style="color:'+col+'">'+LETTERS[i]+'</span>'
+      +'<div class="ans-track"><div class="ans-fill" style="width:'+pct+'%;background:'+col+'"></div></div>'
+      +'<span class="ans-count">'+cnt+' ('+pct+'%)</span>'
+      +'</div>'
+      +(who?'<div class="ans-who">'+who+'</div>':'')
+      +'</div>';
+  }).join('');
+  document.getElementById('breakdown').innerHTML=html;
+}
+
+function bdNav(dir){bdQ=Math.max(0,Math.min(QUESTIONS.length-1,bdQ+dir));renderBreakdown();}
+
+function clearResponses(){
+  if(!confirm('Clear all saved responses?'))return;
+  try{localStorage.removeItem('trivia_resp');}catch(e){}
+  responses=[];
+  renderDashboard();
 }
 </script>
 </body>
