@@ -109,6 +109,11 @@ label{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-tra
 .ans-who{font-size:11px;color:var(--text-dim);padding-left:26px}
 .info-banner{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;font-size:13px;color:var(--amber);line-height:1.6}
 .info-banner strong{color:#5a4500}
+.timer-wrap{display:flex;align-items:center;gap:10px;margin-bottom:1.75rem}
+.timer-num{font-size:15px;font-weight:700;color:var(--text);min-width:28px;text-align:right;flex-shrink:0;transition:color .3s}
+.timer-num.warning{color:var(--red)}
+.timer-track{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.timer-fill{height:100%;border-radius:2px;background:var(--accent);transition:width 1s linear,background .3s}
 </style>
 </head>
 <body>
@@ -129,7 +134,7 @@ label{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-tra
   <button class="btn btn-primary btn-full" onclick="startQuiz()">Start quiz →</button>
   <div class="chips">
     <div class="chip" id="q-count-chip">5 questions</div>
-    <div class="chip">Go at your own pace</div>
+    <div class="chip">45 seconds per question</div>
   </div>
 </div>
 
@@ -140,6 +145,10 @@ label{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-tra
     <span class="qscore" id="qscore">0 correct</span>
   </div>
   <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="timer-wrap">
+    <div class="timer-track"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
+    <span class="timer-num" id="timer-num">30s</span>
+  </div>
   <div class="card">
     <div class="qlabel" id="qlabel">Question 1</div>
     <div class="qtext" id="qtext"></div>
@@ -158,7 +167,6 @@ label{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-tra
     <p style="font-size:14px;color:var(--text-muted)" id="res-msg"></p>
   </div>
   <div id="review-list"></div>
-  <button class="btn btn-full" onclick="retryQuiz()" style="margin-top:.25rem">Try again</button>
   <div class="share-note">Your score has been saved. The host can see your results on the dashboard.</div>
 </div>
 
@@ -310,7 +318,9 @@ const QUESTIONS = [
 ];
 
 const LETTERS = ['A','B','C','D'];
+const TIMER_SEC = 45;
 let pName='', pQ=0, pScore=0, pAnswers=[], bdQ=0, responses=[];
+let timerInterval=null, timeLeft=0;
 
 document.getElementById('q-count-chip').textContent = QUESTIONS.length + ' questions';
 
@@ -344,9 +354,55 @@ function renderQ(){
   const fb=document.getElementById('feedback');
   fb.style.display='none'; fb.className='feedback';
   document.getElementById('btn-next').style.display='none';
+  startTimer();
+}
+
+function startTimer(){
+  stopTimer();
+  timeLeft=TIMER_SEC;
+  updateTimerUI();
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    updateTimerUI();
+    if(timeLeft<=0){stopTimer();timeoutQ();}
+  },1000);
+}
+
+function stopTimer(){
+  clearInterval(timerInterval);
+  timerInterval=null;
+}
+
+function updateTimerUI(){
+  const pct=Math.round((timeLeft/TIMER_SEC)*100);
+  const fill=document.getElementById('timer-fill');
+  const num=document.getElementById('timer-num');
+  if(!fill||!num) return;
+  fill.style.width=pct+'%';
+  fill.style.background=timeLeft<=10?'var(--red)':timeLeft<=20?'var(--amber)':'var(--accent)';
+  num.textContent=timeLeft+'s';
+  num.className='timer-num'+(timeLeft<=10?' warning':'');
+}
+
+function timeoutQ(){
+  // Time ran out — mark as unanswered, show correct answer
+  const q=QUESTIONS[pQ];
+  pAnswers.push(-1); // -1 = no answer
+  document.querySelectorAll('.opt').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.answer) b.classList.add('correct');
+  });
+  const fb=document.getElementById('feedback');
+  fb.className='feedback no';
+  fb.textContent="Time's up! The correct answer was "+LETTERS[q.answer]+'. '+q.explanation;
+  fb.style.display='block';
+  const nb=document.getElementById('btn-next');
+  nb.style.display='block';
+  nb.textContent=pQ<QUESTIONS.length-1?'Next →':'See results →';
 }
 
 function selectAns(idx){
+  stopTimer();
   const q=QUESTIONS[pQ];
   const ok=idx===q.answer;
   if(ok) pScore++;
@@ -384,9 +440,12 @@ async function finishQuiz(){
   else if(pct>=50){grade.textContent='Good effort';grade.className='grade grade-good';msg.textContent='Solid work! A few more to brush up on.';}
   else{grade.textContent='Keep practising';grade.className='grade grade-ok';msg.textContent='Better luck next time — give it another go!';}
   document.getElementById('review-list').innerHTML=QUESTIONS.map((q,i)=>{
-    const ch=pAnswers[i], ok=ch===q.answer;
+    const ch=pAnswers[i];
+    const timedOut=ch===-1;
+    const ok=!timedOut&&ch===q.answer;
+    const chosenText=timedOut?'No answer (timed out)':LETTERS[ch]+'. '+q.options[ch];
     return '<div class="review-item"><div class="review-q">'+(i+1)+'. '+q.q+'</div>'
-      +'<div class="review-a '+(ok?'r-correct':'r-wrong')+'">'+(ok?'✓':'✗')+' '+LETTERS[ch]+'. '+q.options[ch]+'</div>'
+      +'<div class="review-a '+(ok?'r-correct':'r-wrong')+'">'+(ok?'✓':'✗')+' '+chosenText+'</div>'
       +(!ok?'<div class="r-hint">Correct: '+LETTERS[q.answer]+'. '+q.options[q.answer]+'</div>':'')
       +'</div>';
   }).join('');
