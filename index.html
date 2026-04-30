@@ -482,17 +482,26 @@ function hostLogin(){
 
 async function loadDashboard(){
   document.getElementById('last-refresh').textContent='Updated: '+new Date().toLocaleTimeString();
+
+  // Always load localStorage first so same-device results show immediately
+  responses = getLocal();
+  document.getElementById('setup-notice').style.display = responses.length ? 'none' : 'block';
+  renderDashboard();
+
+  // Then try to fetch from Google Sheet and merge
   if(SHEET_URL){
-    document.getElementById('setup-notice').style.display='none';
-    jsonpFetch(SHEET_URL, function(data){
-      responses = data;
+    jsonpFetch(SHEET_URL, function(sheetData){
+      if(!sheetData || !sheetData.length) return;
+      // Merge: sheet data wins over local for same name
+      const merged = [...sheetData];
+      getLocal().forEach(local => {
+        if(!merged.find(r => r.name === local.name)) merged.push(local);
+      });
+      responses = merged;
+      document.getElementById('setup-notice').style.display = 'none';
       renderDashboard();
     });
-    return;
   }
-  document.getElementById('setup-notice').style.display='block';
-  responses=getLocal();
-  renderDashboard();
 }
 
 function jsonpFetch(url, callback){
